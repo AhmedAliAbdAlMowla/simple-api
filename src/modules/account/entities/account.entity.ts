@@ -4,11 +4,15 @@ import {
   Column,
   Unique,
   CreateDateColumn,
+  Index,
+  OneToMany
 } from 'typeorm';
+import { NoteEntity } from 'src/modules/note/entities/note.entity';
 
 @Entity('account')
 @Unique(['email']) // Ensures that email is unique
-export class Account {
+@Index(['email']) // also add index
+export class AccountEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -18,13 +22,13 @@ export class Account {
   @Column({ name: 'last_name', length: 30 })
   lastName: string;
 
-  @Column({ length: 255 })
+  @Column({ length: 55 }) 
   email: string;
 
   @Column({ length: 255 })
   password: string;
 
-  @Column({ type: 'enum', enum: ['admin', 'user'], default: 'user' }) // Replace with your role options
+  @Column({ type: 'enum', enum: ['admin', 'user'], default: 'user' }) 
   role: string;
 
   @Column({ name: 'profile_image_link', length: 400, nullable: true })
@@ -56,4 +60,7 @@ export class Account {
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;
+
+  @OneToMany(() => NoteEntity, (note) => note.account)
+  note: NoteEntity[];
 }
